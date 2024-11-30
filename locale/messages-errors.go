@@ -13,16 +13,16 @@ import (
 // that this message has been removed from the translation files, so
 // it is not useable at run time.
 type FooBarTemplData struct {
-	astrolibTemplData
+	sundaeTemplData
 	Path   string
 	Reason error
 }
 
-// the ID should use spp/library specific code, so replace astrolib with the
+// the ID should use spp/library specific code, so replace sundae with the
 // name of the library implementing this template project.
 func (td FooBarTemplData) Message() *i18n.Message {
 	return &i18n.Message{
-		ID:          "foo-bar.astrolib.nav",
+		ID:          "foo-bar.sundae.nav",
 		Description: "Foo Bar description",
 		Other:       "foo bar failure '{{.Path}}' (reason: {{.Reason}})",
 	}
