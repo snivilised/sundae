@@ -1,4 +1,4 @@
-name: Astrolib Continuous Integration
+name: Sundae Continuous Integration
 
 on:
   push:
