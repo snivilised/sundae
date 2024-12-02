@@ -2,10 +2,21 @@ package lab
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
+)
+
+var (
+	Perms = struct {
+		File fs.FileMode
+		Dir  fs.FileMode
+	}{
+		File: 0o666, //nolint:mnd // ok (pedantic)
+		Dir:  0o777, //nolint:mnd // ok (pedantic)
+	}
 )
 
 func Path(parent, relative string) string {
@@ -42,9 +53,25 @@ func Root() string {
 	panic("could not get root path")
 }
 
+// Combine creates a path from the parent combined with the relative path. The relative
+// path is a file system path so should only contain forward slashes, not the standard
+// file path separator as denoted by filepath.Separator, typically used when interacting
+// with the local file system. Do not use trailing "/".
+func Combine(parent, relative string) string {
+	if relative == "" {
+		return parent
+	}
+
+	return parent + "/" + relative
+}
+
 func Repo(relative string) string {
-	_, filename, _, _ := runtime.Caller(0) //nolint:dogsled // ignore
-	return Path(filepath.Dir(filename), relative)
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	output, _ := cmd.Output()
+
+	repo := strings.TrimSpace(string(output))
+
+	return Combine(repo, relative)
 }
 
 func Log() string {
