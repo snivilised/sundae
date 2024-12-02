@@ -1,4 +1,4 @@
-# 🍦sundae: ___assistant for cobra base cli applications___
+# 🍦sundae: ___assistant for cobra based cli applications___
 
 [![A B](https://img.shields.io/badge/branching-commonflow-informational?style=flat)](https://commonflow.org)
 [![A B](https://img.shields.io/badge/merge-rebase-informational?style=flat)](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
@@ -31,9 +31,11 @@
 
 ## 🔰 Introduction
 
-Assistant for Go cli applications.
+_[Cobra](https://cobra.dev/) is an excellent framework for the development of command line applications, but is missing a few features that would make it a bit easier to work with. This package aims to fulfil this purpose, especially in regards to creation of commands, encapsulating commands into a container and providing an export mechanism to re-create cli data in a form that is free from cobra (and indeed sundae) abstractions. The aim of this last aspect to to be able to inject data into the core of an application in a way that removes tight coupling to the `Cobra` framework, which is achieved by representing data only in terms of client defined (native) abstractions.
 
 ## 📚 Usage
+
+... tbd
 
 ## 🎀 Features
 
@@ -42,21 +44,46 @@ Assistant for Go cli applications.
   <a href="https://onsi.github.io/gomega/"><img src="https://onsi.github.io/gomega/images/gomega.png" width="100" alt="ginkgo" /></a>
 </p>
 
++ Cobra container; collection of cobra commands that can be independently referenced by name as opposed to via child/parent relationship. The container also takes care of adding commands to the root or any other as required.
++ A `parameter set` groups together all the flag option values, so that they don't have to be handled separately. A single entity (the ___ParamSet___) can be created and passed into the core of the client application.
 + unit testing with [Ginkgo](https://onsi.github.io/ginkgo/)/[Gomega](https://onsi.github.io/gomega/)
 + implemented with [🐍 Cobra](https://cobra.dev/) cli framework
 + i18n with [go-i18n](https://github.com/nicksnyder/go-i18n)
 + linting configuration and pre-commit hooks, (see: [linting-golang](https://freshman.tech/linting-golang/)).
 
-## 🔨 Developer Info
+### 🎁 Cobra Container
 
-### 🌐 l10n Translations
+The container serves as a repository for `Cobra` commands and `Cobrass` parameter sets. Commands in `Cobra` are related to each other via parent child relationships. The container, flattens this hierarchy so that a command can be queried for, simply by its name, as opposed to getting the commands by parent command, ie ___parentCommand.Commands()___.
 
-This template has been setup to support localisation. The default language is `en-GB` with support for `en-US`. There is a translation file for `en-US` defined as __src/i18n/deploy/sundae.active.en-US.json__. This is the initial translation for `en-US` that should be deployed with the app.
+The methods on the container, should not fail. Any failures that occur are due to programming errors. For this reason, when an error scenario occurs, a panic is raised.
 
-Make sure that the go-i18n package has been installed so that it can be invoked as cli, see [go-i18n](https://github.com/nicksnyder/go-i18n) for installation instructions.
+Registering commands/parameter sets with the container, obviates the need to use specific `Cobra` api calls as they are handled on the clients behalf by the container. For parameter sets, the type specific methods on the various ___FlagSet___ definitions, such as ___Float32Var___, do not have to be called by the client. For commands, ___AddCommand___ does not have to be called explicitly either.
 
-To maintain localisation of the application, the user must take care to implement all steps to ensure translate-ability of all user facing messages. Whenever there is a need to add/change user facing messages including error messages, to maintain this state, the user must:
+### 💎 Param Set
 
-+ define template struct (__xxxTemplData__) in __src/i18n/messages.go__ and corresponding __Message()__ method. All messages are defined here in the same location, simplifying the message extraction process as all extractable strings occur at the same place. Please see [go-i18n](https://github.com/nicksnyder/go-i18n) for all translation/pluralisation options and other regional sensitive content.
+The rationale behind the concept of a parameter set came from initial discovery of how the `Cobra` api worked. Capturing user defined command line input requires binding option values into disparate variables. Having to manage independently defined variables usually at a package level could lead to a scattering of these variables on an adhoc basis. Having to then pass all these items independently into the core of a client application could easily become disorganised.
 
-For more detailed workflow instructions relating to i18n, please see [i18n README](./resources/doc/i18n-README.md)
+To manage this, the concept of a `parameter set` was introduced to bring about a consistency of design to the implementation of multiple cli applications. The aim of this is to reduce the number package level global variables that have to be managed. Instead of handling multiple option variables independently, the client can group them together into a parameter set.
+
+Each `Cobra` command can define multiple parameter sets which reflects the different ways that a particular command can be invoked by the user. However, to reduce complexity, it's probably best to stick with a single parameter set per command. Option values not defined by the user can already be defaulted by the `Cobra` api itself, but it may be, that distinguishing the way that a command is invoked (ie what combination of flags/options appear on the command line) may be significant to the application, in which case the client can define multiple parameter sets.
+
+The ___ParamSet___ also handles flag definition on each command. The client defines the flag info and passes this into the appropriate `binder` method depending on the option value type. The binder methods are of the form:
+
++ ___Bind\<Type>___ : where ___\<Type>___ represents the type, (eg ___BindString___), the client passes in '___info___', a ___FlagInfo___ object and '___to___' a pointer to a variable to which `Cobra` will bind the option value to.
+
+### 🎭 Alternative Flag Set
+
+By default, binding a flag is performed on the default flag set. This flag set is the one you get from calling ___command.Flags()___ (this is performed automatically by ___NewFlagInfo___). However, there are a few more options for defining flags in `Cobra`. There are multiple flag set methods on the `Cobra` command, eg ___command.PersistentFlags()___. To utilise an alternative flag set, the client should use ___NewFlagInfoOnFlagSet___ instead of ___NewFlagInfo___. ___NewFlagInfoOnFlagSet___ requires that an extra parameter be provided and that is the alternative flag set, which can be derived from calling the appropriate method on the `command`, eg:
+
+```go
+  paramSet.BindString(
+    assistant.NewFlagInfoOnFlagSet("pattern", "p", "default-pattern",
+      widgetCommand.PersistentFlags()), &paramSet.Native.Pattern,
+  )
+```
+
+The flag set defined for the flag (in the above case 'pattern'), will always override the default one defined on the parameter set.
+
+### ✨ Code Generation
+
+Please see [Powershell Code Generation](resources/doc/CODE-GEN.md)
