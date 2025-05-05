@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/onsi/ginkgo/v2 v2.23.4
-	github.com/onsi/gomega v1.36.3
+	github.com/onsi/gomega v1.37.0
 	github.com/snivilised/li18ngo v0.1.9
 	github.com/spf13/pflag v1.0.6
 )
