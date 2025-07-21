@@ -7,7 +7,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.23.4
 	github.com/onsi/gomega v1.36.3
 	github.com/snivilised/li18ngo v0.1.9
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/pflag v1.0.7
 )
 
 require (
