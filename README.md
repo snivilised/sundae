@@ -31,7 +31,7 @@
 
 ## 🔰 Introduction
 
-_[Cobra](https://cobra.dev/) is an excellent framework for the development of command line applications, but is missing a few features that would make it a bit easier to work with. This package aims to fulfil this purpose, especially in regards to creation of commands, encapsulating commands into a container and providing an export mechanism to re-create cli data in a form that is free from cobra (and indeed sundae) abstractions. The aim of this last aspect to to be able to inject data into the core of an application in a way that removes tight coupling to the `Cobra` framework, which is achieved by representing data only in terms of client defined (native) abstractions.
+[Cobra](https://cobra.dev/) is an excellent framework for the development of command line applications, but is missing a few features that would make it a bit easier to work with. This package aims to fulfil this purpose, especially in regards to creation of commands, encapsulating commands into a container and providing an export mechanism to re-create cli data in a form that is free from cobra (and indeed sundae) abstractions. The aim of this last aspect to to be able to inject data into the core of an application in a way that removes tight coupling to the `Cobra` framework, which is achieved by representing data only in terms of client defined (native) abstractions.
 
 ## 📚 Usage
 

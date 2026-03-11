@@ -1,7 +1,6 @@
 package assist_test
 
 import (
-	"fmt"
 	"net"
 	"time"
 
@@ -65,42 +64,3 @@ type WidgetParameterSet struct {
 }
 
 type InvalidParameterSet string
-
-func duration(d string) time.Duration {
-	result, _ := time.ParseDuration(d)
-	return result
-}
-
-func ipmask(v string) net.IPMask {
-	var result net.IPMask
-
-	switch v {
-	case "default":
-		result = net.IPMask([]byte{0, 0, 0, 0})
-
-	case "orion.net":
-		result = net.IPMask([]byte{255, 255, 255, 0})
-
-	default:
-		panic(fmt.Errorf("no ipmask defined for: '%v'", v))
-	}
-
-	return result
-}
-
-func ipnet(v string) net.IPNet {
-	var result net.IPNet
-
-	switch v {
-	case "default":
-		result = net.IPNet{IP: net.IPv4(0, 0, 0, 0), Mask: ipmask(v)}
-
-	case "orion.net":
-		result = net.IPNet{IP: net.IPv4(172, 16, 0, 0), Mask: ipmask(v)}
-
-	default:
-		panic(fmt.Errorf("no ipnet defined for: '%v'", v))
-	}
-
-	return result
-}
