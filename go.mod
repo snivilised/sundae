@@ -6,7 +6,7 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
-	github.com/snivilised/li18ngo v0.1.10
+	github.com/snivilised/li18ngo v0.1.13
 	github.com/spf13/pflag v1.0.10
 )
 
@@ -37,8 +37,8 @@ require (
 	github.com/spf13/viper v1.21.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa
-	golang.org/x/net v0.51.0 // indirect
+	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/text v0.35.0
-	golang.org/x/tools v0.42.0 // indirect
+	golang.org/x/text v0.36.0
+	golang.org/x/tools v0.43.0 // indirect
 )
